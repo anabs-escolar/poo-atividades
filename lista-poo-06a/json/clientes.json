@@ -1,0 +1,62 @@
+[
+    {
+        "id": 1,
+        "nome": "Ana Beatriz",
+        "email": "ana.beatriz@example.com",
+        "fone": "+55 (11) 91234-0001"
+    },
+    {
+        "id": 2,
+        "nome": "Bruno Silva",
+        "email": "bruno.silva@example.com",
+        "fone": "+55 (21) 99876-5432"
+    },
+    {
+        "id": 4,
+        "nome": "Daniel Oliveira",
+        "email": "daniel.oliveira@example.com",
+        "fone": "+55 (41) 91444-3322"
+    },
+    {
+        "id": 5,
+        "nome": "Eduarda Ferreira",
+        "email": "eduarda.ferreira@example.com",
+        "fone": "+55 (51) 91555-2211"
+    },
+    {
+        "id": 6,
+        "nome": "Felipe Costa",
+        "email": "felipe.costa@example.com",
+        "fone": "+55 (61) 91666-1100"
+    },
+    {
+        "id": 7,
+        "nome": "Gabriela Ramos",
+        "email": "gabriela.ramos@example.com",
+        "fone": "+55 (71) 91777-0099"
+    },
+    {
+        "id": 8,
+        "nome": "Henrique Lopes",
+        "email": "henrique.lopes@example.com",
+        "fone": "+55 (81) 91888-7788"
+    },
+    {
+        "id": 9,
+        "nome": "Ana",
+        "email": "a@e",
+        "fone": "00"
+    },
+    {
+        "id": 10,
+        "nome": "Thay",
+        "email": "t@e",
+        "fone": "11"
+    },
+    {
+        "id": 11,
+        "nome": "Mobi",
+        "email": "m@e",
+        "fone": "22"
+    }
+]

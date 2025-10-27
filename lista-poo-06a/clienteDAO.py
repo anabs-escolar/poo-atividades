@@ -1,6 +1,7 @@
-from .cliente import Cliente
+from cliente import Cliente
 from pathlib import Path
 import json
+
 
 class ClienteDAO:
     objetos: list[Cliente] = []
@@ -8,6 +9,7 @@ class ClienteDAO:
     @staticmethod
     def inserir(obj: Cliente) -> None:
         ClienteDAO.objetos.append(obj)
+        ClienteDAO.salvar()
 
     @staticmethod
     def listar() -> list[Cliente]:
@@ -25,6 +27,7 @@ class ClienteDAO:
         for i in range(len(ClienteDAO.objetos)):
             if ClienteDAO.objetos[i].get_id() == obj.get_id():
                 ClienteDAO.objetos[i] = obj
+                ClienteDAO.salvar()
                 break
 
     @staticmethod
@@ -32,49 +35,37 @@ class ClienteDAO:
         for i in range(len(ClienteDAO.objetos)):
             if ClienteDAO.objetos[i].get_id() == obj.get_id():
                 del ClienteDAO.objetos[i]
+                ClienteDAO.salvar()
                 break
 
     @staticmethod
     def abrir() -> None:
-        path = Path(__file__).parent / "clientes.json"
-        ClienteDAO.objetos = []
+        path = Path(__file__).parent / "json/clientes.json"
         if not path.exists():
+            ClienteDAO.objetos = []
             return
         try:
             with path.open("r", encoding="utf-8") as f:
                 data = json.load(f)
+            ClienteDAO.objetos = []
+            for item in data:
+                if hasattr(Cliente, "from_dict"):
+                    ClienteDAO.objetos.append(Cliente.from_dict(item))
+                else:
+                    ClienteDAO.objetos.append(Cliente(**item))
         except (json.JSONDecodeError, OSError):
-            return
-
-        if not isinstance(data, list):
-            return
-
-        for item in data:
-            if not isinstance(item, dict):
-                continue
-            # Prefer a from_dict classmethod if available, otherwise try constructor with kwargs
-            if hasattr(Cliente, "from_dict") and callable(getattr(Cliente, "from_dict")):
-                try:
-                    obj = Cliente.from_dict(item)
-                except Exception:
-                    continue
-            else:
-                try:
-                    obj = Cliente(**item)
-                except Exception:
-                    continue
-            ClienteDAO.objetos.append(obj)
+            ClienteDAO.objetos = []
 
     @staticmethod
     def salvar() -> None:
-        path = Path(__file__).parent / "clientes.json"
+        path = Path(__file__).parent / "json/clientes.json"
         data = []
         for obj in ClienteDAO.objetos:
             item = {
                 "id": obj.get_id(),
                 "nome": obj.get_nome(),
                 "email": obj.get_email(),
-                "fone": obj.get_fone()
+                "fone": obj.get_fone(),
             }
             data.append(item)
         try:

@@ -1,18 +1,17 @@
-
 class Cliente:
     __id: int
     __nome: str
     __email: str
     __fone: str
 
-    def __init__(self, id: int, n: str, e: str, f: str):
+    def __init__(self, id: int, nome: str, email: str, fone: str):
         self.__id = id
-        self.__nome = n
-        self.__email = e
-        self.__fone = f
+        self.__nome = nome
+        self.__email = email
+        self.__fone = fone
 
     def __str__(self) -> str:
-        return f"id: {self.id}, {self.nome}, {self.email}, {self.fone}"
+        return f"id: {self.__id}, {self.__nome}, {self.__email}, {self.__fone}"
 
     def get_id(self) -> int:
         return self.__id
@@ -27,10 +26,16 @@ class Cliente:
         return self.__fone
 
     def set_nome(self, n: str) -> None:
-        self.__nome = n 
+        if not n:
+            return
+        self.__nome = n
 
     def set_email(self, e: str) -> None:
+        if not e:
+            return
         self.__email = e
 
     def set_fone(self, f: str) -> None:
+        if not f:
+            return
         self.__fone = f
