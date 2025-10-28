@@ -102,7 +102,7 @@ class UI:
 
     @staticmethod
     def produto_inserir() -> None:
-        UI.clean
+        UI.clean()
         print("=== Inserir Produto ===")
 
         id = int(input("ID: "))
