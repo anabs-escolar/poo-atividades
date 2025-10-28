@@ -1,6 +1,6 @@
 import os
-from ..dao import CategoriaDAO, ProdutoDAO, ClienteDAO, VendaDAO, VendaItemDAO
-from ..models import Categoria, Produto, Cliente
+from dao import CategoriaDAO, ProdutoDAO, ClienteDAO, VendaDAO, VendaItemDAO
+from models import Categoria, Produto, Cliente
 
 
 class UI:
@@ -102,17 +102,30 @@ class UI:
 
     @staticmethod
     def produto_inserir() -> None:
+        UI.clean
+        print("=== Inserir Produto ===")
+
         id = int(input("ID: "))
         descricao = input("Descrição: ")
         preco = float(input("Preço: "))
         estoque = int(input("Estoque: "))
-        produto = Produto(id, descricao, preco, estoque)
+
+        print("Categorias disponíveis:")
+        categorias = CategoriaDAO.listar()
+        for categoria in categorias:
+            print("\t", categoria)
+        id_categoria = int(input("ID da Categoria: "))
+
+        produto = Produto(id, descricao, preco, estoque, id_categoria)
         ProdutoDAO.inserir(produto)
         print(f"Produto {produto.get_descricao()} inserido com sucesso!")
         input("Pressione Enter para continuar...")
 
     @staticmethod
     def produto_listar() -> None:
+        UI.clean()
+        print("=== Lista de Produtos ===")
+
         produtos = ProdutoDAO.listar()
         if not produtos:
             print("Nenhum produto cadastrado!")
@@ -123,6 +136,9 @@ class UI:
 
     @staticmethod
     def produto_atualizar() -> None:
+        UI.clean()
+        print("=== Atualizar Produto ===")
+
         id = int(input("ID do produto a atualizar: "))
         produto = ProdutoDAO.listar_id(id)
         if produto is None:
@@ -137,6 +153,9 @@ class UI:
 
     @staticmethod
     def produto_excluir() -> None:
+        UI.clean()
+        print("=== Excluir de Produtos ===")
+
         id = int(input("ID do produto a excluir: "))
         produto = ProdutoDAO.listar_id(id)
         if produto is None:
@@ -148,6 +167,9 @@ class UI:
 
     @staticmethod
     def categoria_inserir() -> None:
+        UI.clean()
+        print("=== Inserir Categoria ===")
+
         id = int(input("ID: "))
         descricao = input("Descrição: ")
         categoria = Categoria(id, descricao)
@@ -157,6 +179,9 @@ class UI:
 
     @staticmethod
     def categoria_listar() -> None:
+        UI.clean()
+        print("=== Lista de Categorias ===")
+
         categorias = CategoriaDAO.listar()
         if not categorias:
             print("Nenhuma categoria cadastrada!")
@@ -167,6 +192,9 @@ class UI:
 
     @staticmethod
     def categoria_atualizar() -> None:
+        UI.clean()
+        print("=== Atualizar Categoria ===")
+
         id = int(input("ID da categoria a atualizar: "))
         categoria = CategoriaDAO.listar_id(id)
         if categoria is None:
@@ -179,6 +207,9 @@ class UI:
 
     @staticmethod
     def categoria_excluir() -> None:
+        UI.clean()
+        print("=== Excluir Categoria ===")
+
         id = int(input("ID da categoria a excluir: "))
         categoria = CategoriaDAO.listar_id(id)
         if categoria is None:
@@ -190,6 +221,9 @@ class UI:
 
     @staticmethod
     def cliente_listar() -> None:
+        UI.clean()
+        print("=== Lista de Clientes ===")
+
         clientes = ClienteDAO.listar()
         if not clientes:
             print("Nenhum cliente cadastrado!")
@@ -200,6 +234,9 @@ class UI:
 
     @staticmethod
     def cliente_inserir() -> None:
+        UI.clean()
+        print("=== Inserir Cliente ===")
+
         id = int(input("ID: "))
         nome = input("Nome: ")
         email = input("Email: ")
@@ -211,6 +248,9 @@ class UI:
 
     @staticmethod
     def cliente_atualizar() -> None:
+        UI.clean()
+        print("=== Atualizar Cliente ===")
+
         id = int(input("ID do cliente a atualizar: "))
         cliente = ClienteDAO.listar_id(id)
         if cliente is None:
@@ -225,6 +265,9 @@ class UI:
 
     @staticmethod
     def cliente_excluir() -> None:
+        UI.clean()
+        print("=== Excluir Cliente ===")
+
         id = int(input("ID do cliente a excluir: "))
         cliente = ClienteDAO.listar_id(id)
         if cliente is None:
