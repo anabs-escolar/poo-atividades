@@ -1,0 +1,16 @@
+[
+  {
+    "id": 1,
+    "data": "2025-10-27T14:30:00",
+    "carrinho": false,
+    "total": 21.90,
+    "id_cliente": 1
+  },
+  {
+    "id": 2,
+    "data": "2025-10-27T15:10:00",
+    "carrinho": false,
+    "total": 13.00,
+    "id_cliente": 2
+  }
+]

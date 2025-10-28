@@ -1,0 +1,16 @@
+[
+  {
+    "id": 1,
+    "descricao": "Suco de Caju 1L",
+    "preco": 6.50,
+    "estoque": 40,
+    "id_categoria": 1
+  },
+  {
+    "id": 2,
+    "descricao": "Tomate Orgânico 1kg",
+    "preco": 8.90,
+    "estoque": 25,
+    "id_categoria": 2
+  }
+]

@@ -1,0 +1,14 @@
+[
+  {
+    "id": 1,
+    "nome": "Ana Barbosa",
+    "email": "ana.barbosa@email.com",
+    "fone": "(84) 99999-1111"
+  },
+  {
+    "id": 2,
+    "nome": "João Silva",
+    "email": "joao.silva@email.com",
+    "fone": "(84) 98888-2222"
+  }
+]

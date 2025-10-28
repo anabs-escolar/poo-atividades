@@ -1,0 +1,23 @@
+[
+  {
+    "id": 1,
+    "qtd": 2,
+    "preco": 6.50,
+    "id_venda": 1,
+    "id_produto": 1
+  },
+  {
+    "id": 2,
+    "qtd": 1,
+    "preco": 8.90,
+    "id_venda": 1,
+    "id_produto": 2
+  },
+  {
+    "id": 3,
+    "qtd": 2,
+    "preco": 6.50,
+    "id_venda": 2,
+    "id_produto": 1
+  }
+]
