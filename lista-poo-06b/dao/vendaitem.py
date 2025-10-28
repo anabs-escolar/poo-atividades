@@ -1,8 +1,8 @@
 # classe VendaItemDAO
 import json
 from pathlib import Path
-from ..models.vendaitem import VendaItem
-from ..dao.base_dao import BaseDAO
+from models.vendaitem import VendaItem
+from dao.base_dao import BaseDAO
 
 
 class VendaItemDAO(BaseDAO[VendaItem]):

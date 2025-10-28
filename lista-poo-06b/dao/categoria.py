@@ -1,8 +1,8 @@
 # classe CategoriaDAO
 import json
 from pathlib import Path
-from ..models.categoria import Categoria
-from ..dao.base_dao import BaseDAO
+from models.categoria import Categoria
+from dao.base_dao import BaseDAO
 
 
 class CategoriaDAO(BaseDAO[Categoria]):

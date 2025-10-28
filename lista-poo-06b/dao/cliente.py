@@ -1,8 +1,8 @@
 # classe ClienteDAO
 import json
 from pathlib import Path
-from ..models.cliente import Cliente
-from ..dao.base_dao import BaseDAO
+from models.cliente import Cliente
+from dao.base_dao import BaseDAO
 
 
 class ClienteDAO(BaseDAO[Cliente]):
