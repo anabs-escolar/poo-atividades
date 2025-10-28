@@ -8,11 +8,14 @@ class Produto:
     __estoque: int
     __id_categoria: int
 
-    def __init__(self, id: int, descricao: str, preco: float, estoque: int):
+    def __init__(
+        self, id: int, descricao: str, preco: float, estoque: int, id_categoria: int
+    ):
         self.__id = id
         self.__descricao = descricao
         self.__preco = preco
         self.__estoque = estoque
+        self.__id_categoria = id_categoria
 
     def __str__(self) -> str:
         return f"id: {self.__id}, {self.__descricao}, {self.__preco}, {self.__estoque}"
