@@ -9,7 +9,10 @@ class UI:
         os.system("cls" if os.name == "nt" else "clear")
 
     def continuar():
-        input("Precione ENTER para continuar...")
+        input("\nPrecione ENTER para continuar...")
+
+    def op() -> int:
+        return int(input("\nEscolha uma opção: "))
 
     def main():
         View.abrir_todos()
@@ -25,7 +28,7 @@ class UI:
                 "0. Sair",
                 sep="\n",
             )
-            op = int(input("Escolha uma opção: "))
+            op = UI.op()
             if op == 1:
                 UI.visitante_entrar()
             if op == 2:
@@ -49,8 +52,9 @@ class UI:
                 print(f"\nBem-vindo(a), {cls.__usuario.get_nome()}!")
                 UI.continuar()
                 UI.menu_cliente()
-        print("\nAutenticação falhou, confira seus dados.")
-        UI.continuar()
+        else:
+            print("\nAutenticação falhou, confira seus dados.")
+            UI.continuar()
 
     def visitante_criar_conta():
         UI.clean()
@@ -64,32 +68,31 @@ class UI:
         UI.continuar()
         UI.menu_visitante()
 
-    @staticmethod
     def menu_admin():
         while True:
             UI.clean()
             print("=== Menu de Administrador ===")
             print(
                 "1. Gerenciar Clientes",
-                "2. Gerenciar Clientes",
+                "2. Gerenciar Categorias",
                 "3. Gerenciar Produtos",
                 "0. Sair",
                 sep="\n",
             )
             options = {
-                1: UI.categoria_menu,
-                2: UI.cliente_menu,
+                1: UI.cliente_menu,
+                2: UI.categoria_menu,
                 3: UI.produto_menu,
             }
-            op = int(input("Escolha uma opção: "))
+            op = UI.op()
             if op in options:
                 options[op]()
             elif op == 0:
                 break
 
-    @staticmethod
     def menu_cliente():
         while True:
+            UI.clean()
             print("=== Menu de Cliente ===")
             print(
                 "1. Listar Produtos",
@@ -107,13 +110,12 @@ class UI:
                 # 4: UI.carrinho_comprar
                 # 5: UI.comprar_listar
             }
-            op = int(input("Escolha uma opção: "))
+            op = UI.op()
             if op in options:
                 options[op]()
             elif op == 0:
                 break
 
-    @staticmethod
     def produto_menu() -> None:
         while True:
             UI.clean()
@@ -126,15 +128,15 @@ class UI:
                 "0. Voltar",
                 sep="\n",
             )
-            op = int(input("Escolha uma opção: "))
-            if op == 1:
-                UI.produto_inserir()
-            elif op == 2:
-                UI.produto_listar()
-            elif op == 3:
-                UI.produto_atualizar()
-            elif op == 4:
-                UI.produto_excluir()
+            options = {
+                1: UI.produto_inserir,
+                2: UI.produto_listar,
+                3: UI.produto_atualizar,
+                4: UI.produto_excluir,
+            }
+            op = UI.op()
+            if op in options:
+                options[op]()
             elif op == 0:
                 break
 
@@ -147,15 +149,15 @@ class UI:
             print("3. Atualizar Categoria")
             print("4. Excluir Categoria")
             print("0. Voltar")
-            op = int(input("Escolha uma opção: "))
-            if op == 1:
-                UI.categoria_inserir()
-            elif op == 2:
-                UI.categoria_listar()
-            elif op == 3:
-                UI.categoria_atualizar()
-            elif op == 4:
-                UI.categoria_excluir()
+            op = UI.op()
+            options = {
+                1: UI.categoria_inserir,
+                2: UI.categoria_listar,
+                3: UI.categoria_atualizar,
+                4: UI.categoria_excluir,
+            }
+            if op in options:
+                options[op]()
             elif op == 0:
                 break
 
@@ -168,15 +170,15 @@ class UI:
             print("3. Atualizar Cliente")
             print("4. Excluir Cliente")
             print("0. Voltar")
-            op = int(input("Escolha uma opção: "))
-            if op == 1:
-                UI.cliente_inserir()
-            elif op == 2:
-                UI.cliente_listar()
-            elif op == 3:
-                UI.cliente_atualizar()
-            elif op == 4:
-                UI.cliente_excluir()
+            op = UI.op()
+            options = {
+                1: UI.cliente_inserir,
+                2: UI.cliente_listar,
+                3: UI.cliente_atualizar,
+                4: UI.cliente_excluir,
+            }
+            if op in options:
+                options[op]()
             elif op == 0:
                 break
 
@@ -194,11 +196,10 @@ class UI:
             print("\t", categoria)
         id_categoria = int(input("ID da Categoria: "))
 
-        produto = View.produto_inserir(descricao, preco, estoque, id_categoria)
-        print(f"Produto {produto.get_descricao()} inserido com sucesso!")
+        View.produto_inserir(descricao, preco, estoque, id_categoria)
+        print(f"Produto inserido com sucesso!")
         UI.continuar()
 
-    @staticmethod
     def produto_listar() -> None:
         UI.clean()
         print("=== Lista de Produtos ===")
@@ -210,7 +211,6 @@ class UI:
             print(produto)
         UI.continuar()
 
-    @staticmethod
     def produto_atualizar() -> None:
         UI.clean()
         print("=== Atualizar Produto ===")
@@ -222,7 +222,6 @@ class UI:
         print("Produto atualizado com sucesso!")
         UI.continuar()
 
-    @staticmethod
     def produto_excluir() -> None:
         UI.clean()
         print("=== Excluir de Produtos ===")
@@ -231,7 +230,6 @@ class UI:
         print(f"Produto excluído com sucesso!")
         UI.continuar()
 
-    @staticmethod
     def categoria_inserir() -> None:
         UI.clean()
         print("=== Inserir Categoria ===")
@@ -240,7 +238,6 @@ class UI:
         print(f"Categoria inserida com sucesso!")
         UI.continuar()
 
-    @staticmethod
     def categoria_listar() -> None:
         UI.clean()
         print("=== Lista de Categorias ===")
@@ -252,7 +249,6 @@ class UI:
             print(categoria)
         UI.continuar()
 
-    @staticmethod
     def categoria_atualizar() -> None:
         UI.clean()
         print("=== Atualizar Categoria ===")
@@ -262,7 +258,6 @@ class UI:
         print(f"Categoria atualizada com sucesso!")
         UI.continuar()
 
-    @staticmethod
     def categoria_excluir() -> None:
         UI.clean()
         print("=== Excluir Categoria ===")
@@ -271,11 +266,9 @@ class UI:
         print(f"Categoria excluída com sucesso!")
         UI.continuar()
 
-    @staticmethod
     def cliente_listar() -> None:
         UI.clean()
         print("=== Lista de Clientes ===")
-
         clientes = View.cliente_listar()
         if not clientes:
             print("Nenhum cliente cadastrado!")
@@ -284,7 +277,6 @@ class UI:
             print(cliente)
         UI.continuar()
 
-    @staticmethod
     def cliente_inserir() -> None:
         UI.clean()
         print("=== Inserir Cliente ===")
@@ -292,11 +284,10 @@ class UI:
         email = input("Email: ")
         senha = input("Senha: ")
         fone = input("Fone: ")
-        cliente = View.cliente_inserir(nome, email, senha, fone)
+        View.cliente_inserir(nome, email, senha, fone)
         print(f"Cliente inserido com sucesso!")
-        input("Pressione Enter para continuar...")
+        UI.continuar()
 
-    @staticmethod
     def cliente_atualizar() -> None:
         UI.clean()
         print("=== Atualizar Cliente ===")
@@ -308,11 +299,10 @@ class UI:
         print(f"Cliente atualizado com sucesso!")
         UI.continuar()
 
-    @staticmethod
     def cliente_excluir() -> None:
         UI.clean()
         print("=== Excluir Cliente ===")
         id = int(input("ID do cliente a excluir: "))
         View.cliente_excluir(id)
         print(f"Cliente excluído com sucesso!")
-        input("Pressione Enter para continuar...")
+        UI.continuar()
