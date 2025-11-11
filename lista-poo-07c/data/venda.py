@@ -1,7 +1,7 @@
 # classe VendaDAO
 from pathlib import Path
 from models.venda import Venda
-from dao.base_dao import BaseDAO
+from .base_dao import BaseDAO
 
 
 class VendaDAO(BaseDAO[Venda]):

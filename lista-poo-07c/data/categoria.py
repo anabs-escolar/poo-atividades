@@ -1,7 +1,7 @@
 # classe CategoriaDAO
 from pathlib import Path
 from models.categoria import Categoria
-from dao.base_dao import BaseDAO
+from .base_dao import BaseDAO
 
 
 class CategoriaDAO(BaseDAO[Categoria]):
