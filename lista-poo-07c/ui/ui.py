@@ -105,8 +105,8 @@ class UI:
             )
             options = {
                 1: UI.produto_listar,
-                # 2: UI.produto_inserir_carrinho,
-                # 3: UI.carrinho_visualizar
+                2: UI.produto_inserir_carrinho,
+                3: UI.carrinho_listar,
                 # 4: UI.carrinho_comprar
                 # 5: UI.comprar_listar
             }
@@ -236,8 +236,27 @@ class UI:
         print("=== Adicionar Item ao Carrinho ===")
         id_prod = int(input("ID do produto a adicionar: "))
         qtd = int(input("Quantidade do produto: "))
-        View.produto_inserir_carrinho(id_prod, qtd, cls.__usuario.get_id())
+        View.produto_inserir_carrinho(id_prod, cls.__usuario.get_id(), qtd)
         print("Produto adicionado ao carrinho com sucesso!")
+        UI.continuar()
+
+    @classmethod
+    def carrinho_listar(cls):
+        UI.clean()
+        print("=== Meu Carrinho ===")
+        itens, total = View.carrinho_listar(cls.__usuario.get_id())
+        if itens:
+            for i in itens:
+                print(
+                    f"{i["descricao"]} - Preço: {i["preco_unitario"]:.2f}",
+                    f"\tQuantidade: {i["qtd"]} - Total: R$ {i["total_item"]:.2f}",
+                    sep="\n",
+                )
+            print(f"\nValor Total: R$ {total:.2f}")
+
+        else:
+            print("\nNão há itens no carrinho.")
+
         UI.continuar()
 
     def categoria_inserir() -> None:

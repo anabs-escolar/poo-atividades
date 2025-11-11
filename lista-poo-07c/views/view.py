@@ -9,6 +9,8 @@ class View:
         ClienteDAO.abrir()
         CategoriaDAO.abrir()
         ProdutoDAO.abrir()
+        VendaDAO.abrir()
+        VendaItemDAO.abrir()
 
     def cliente_autenticar(email: str, senha: str) -> object | None:
         for obj in ClienteDAO.listar():
@@ -84,7 +86,7 @@ class View:
                 break
 
         if venda_aberta is None:
-            venda_aberta = Venda(0, id_cliente, True, datetime.now())
+            venda_aberta = Venda(0, datetime.now(), True, 0.0, id_cliente)
             VendaDAO.inserir(venda_aberta)
 
         produto = ProdutoDAO.listar_id(id_produto)
@@ -98,7 +100,6 @@ class View:
                 item = vi
 
         if item:
-            antigo_preco = item.get_preco()
             novo_qtd = item.get_qtd() + qtd
             novo_preco = novo_qtd * produto.get_preco()
 
@@ -106,14 +107,48 @@ class View:
             item.set_preco(novo_preco)
 
             VendaItemDAO.atualizar(item)
-            venda_aberta.set_total(
-                venda_aberta.get_total() + (novo_preco - antigo_preco)
-            )
         else:
             item = VendaItem(
                 0, venda_aberta.get_id(), id_produto, qtd, qtd * produto.get_preco()
             )
             VendaItemDAO.inserir(item)
-            venda_aberta.set_total(qtd * produto.get_preco())
 
+        total = 0.0
+        for vi in VendaItemDAO.listar():
+            if venda_aberta.get_id() == vi.get_id_venda():
+                total += vi.get_preco()
+        venda_aberta.set_total(total)
         VendaDAO.atualizar(venda_aberta)
+
+    def carrinho_listar(id_cliente: int) -> tuple[list[dict], float]:
+        venda_aberta = None
+        for v in VendaDAO.listar():
+            if v.get_id_cliente() == id_cliente and v.get_carrinho():
+                venda_aberta = v
+                break
+
+        if venda_aberta is None:
+            return [], 0.0
+
+        itens: list[dict] = []
+        for vi in VendaItemDAO.listar():
+            if vi.get_id_venda() == venda_aberta.get_id():
+                produto = ProdutoDAO.listar_id(vi.get_id_produto())
+                preco_unit = vi.get_preco() / vi.get_qtd() if vi.get_qtd() else 0.0
+                descricao = ""
+
+                if produto:
+                    descricao = produto.get_descricao()
+                    preco_unit = produto.get_preco()
+
+                itens.append(
+                    {
+                        "id_produto": vi.get_id_produto(),
+                        "descricao": descricao,
+                        "preco_unitario": preco_unit,
+                        "qtd": vi.get_qtd(),
+                        "total_item": vi.get_preco(),
+                    }
+                )
+
+        return itens, venda_aberta.get_total()
