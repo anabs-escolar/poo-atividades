@@ -12,7 +12,7 @@ class View:
         VendaDAO.abrir()
         VendaItemDAO.abrir()
 
-    def cliente_autenticar(email: str, senha: str) -> object | None:
+    def cliente_autenticar(email: str, senha: str) -> Cliente | None:
         for obj in ClienteDAO.listar():
             if (obj.get_email() == email) and (obj.get_senha() == senha):
                 return obj
@@ -21,21 +21,33 @@ class View:
     def cliente_listar() -> list[Cliente]:
         return ClienteDAO.listar()
 
-    def cliente_inserir(nome: str, email: str, senha: str, fone: str) -> None:
-        cliente = Cliente(0, nome, email, senha, fone)
+    def cliente_inserir(
+        nome: str, email: str, senha: str, fone: str, is_admin: bool = False
+    ) -> None:
+        cliente = Cliente(0, nome, email, senha, fone, is_admin)
         ClienteDAO.inserir(cliente)
 
-    def cliente_atuazlizar(
-        id: int, nome: str, email: str, senha: str, fone: str
+    def cliente_atualizar(
+        id: int, nome: str, email: str, fone: str, is_admin: bool | None
     ) -> None:
-        cliente = Cliente(id, nome, email, senha, fone)
+        cliente = ClienteDAO.listar_id(id)
+        if not cliente:
+            print("Cliente não encontrado.")
+            return
+        if nome.strip():
+            cliente.set_nome(nome)
+        if email.strip():
+            cliente.set_email(email)
+        if fone.strip():
+            cliente.set_fone(fone)
+        if is_admin is not None:
+            cliente.set_admin(is_admin)
+
         ClienteDAO.atualizar(cliente)
 
     def cliente_excluir(id: int) -> None:
-        for i in ClienteDAO.listar():
-            if i.get_id() == id:
-                ClienteDAO.excluir(i)
-                break
+        c = ClienteDAO.listar_id(id)
+        ClienteDAO.excluir(c)
 
     def categoria_listar() -> list[Categoria]:
         return CategoriaDAO.listar()
@@ -45,14 +57,17 @@ class View:
         CategoriaDAO.inserir(categoria)
 
     def categoria_atualizar(id: int, descricao: str) -> None:
-        categoria = Categoria(id, descricao)
+        categoria = CategoriaDAO.listar_id(id)
+        if not categoria:
+            print("Categoria não encontrada")
+            return
+        if descricao.strip():
+            categoria.set_descricao(descricao)
         CategoriaDAO.atualizar(categoria)
 
     def categoria_excluir(id: int) -> None:
-        for i in CategoriaDAO.listar():
-            if i.get_id == id:
-                CategoriaDAO.excluir(i)
-                break
+        c = CategoriaDAO.listar_id(id)
+        CategoriaDAO.excluir(c)
 
     def produto_listar() -> list[Produto]:
         return ProdutoDAO.listar()
@@ -66,17 +81,26 @@ class View:
     def produto_atualizar(
         id: int, descricao: str, preco: float, estoque: int, id_categoria: int
     ) -> None:
-        produto = Produto(0, descricao, preco, estoque, id_categoria)
+        produto = ProdutoDAO.listar_id(id)
+        if not produto:
+            print("Produto não encontrado.")
+        if descricao.strip():
+            produto.set_descricao(descricao)
+        if preco:
+            produto.set_preco(preco)
+        if estoque:
+            produto.set_estoque(estoque)
+        if id_categoria:
+            produto.set_id_categoria(id_categoria)
         ProdutoDAO.inserir(produto)
 
     def produto_excluir(id: int) -> None:
-        for i in Produto.listar():
-            if i.get_id == id:
-                ProdutoDAO.excluir(i)
-                break
+        p = ProdutoDAO.listar_id(id)
+        ProdutoDAO.excluir(p)
 
     def produto_reajustar(percentual: float) -> None:
-        pass
+        for p in ProdutoDAO.listar():
+            p.set_preco(p.get_preco() * (percentual + 1))
 
     def produto_inserir_carrinho(id_produto: int, id_cliente: int, qtd: int) -> None:
         venda_aberta = None

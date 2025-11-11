@@ -68,7 +68,8 @@ class UI:
         UI.continuar()
         UI.menu_visitante()
 
-    def menu_admin():
+    @classmethod
+    def menu_admin(cls):
         while True:
             UI.clean()
             print("=== Menu de Administrador ===")
@@ -88,9 +89,13 @@ class UI:
             if op in options:
                 options[op]()
             elif op == 0:
+                print("Desconectando seu usuário.")
+                cls.__usuario = None
+                UI.continuar()
                 break
 
-    def menu_cliente():
+    @classmethod
+    def menu_cliente(cls):
         while True:
             UI.clean()
             print("=== Menu de Cliente ===")
@@ -114,6 +119,9 @@ class UI:
             if op in options:
                 options[op]()
             elif op == 0:
+                print("Desconectando seu usuário.")
+                cls.__usuario = None
+                UI.continuar()
                 break
 
     def produto_menu() -> None:
@@ -125,6 +133,7 @@ class UI:
                 "2. Listar Produtos",
                 "3. Atualizar Produto",
                 "4. Excluir Produto",
+                "5. Reajustar Preço dos Produtos",
                 "0. Voltar",
                 sep="\n",
             )
@@ -133,6 +142,7 @@ class UI:
                 2: UI.produto_listar,
                 3: UI.produto_atualizar,
                 4: UI.produto_excluir,
+                5: UI.produto_reajustar,
             }
             op = UI.op()
             if op in options:
@@ -215,6 +225,7 @@ class UI:
         UI.clean()
         print("=== Atualizar Produto ===")
         id = int(input("ID do produto a atualizar: "))
+        print("Para manter o valor original pressione ENTER.")
         desc = input("Nova descrição: ")
         preco = float(input("Novo preço: "))
         est = int(input("Novo estoque: "))
@@ -228,6 +239,14 @@ class UI:
         id = int(input("ID do produto a excluir: "))
         View.produto_excluir(id)
         print(f"Produto excluído com sucesso!")
+        UI.continuar()
+
+    def produto_reajustar() -> None:
+        UI.clean()
+        print("=== Reajustar Preço dos Produtos ===")
+        per = float(input("Digite o percentual em Decimal. Ex: 50% -> 0.50\n "))
+        View.produto_reajustar(per)
+        print("Preços alterados com sucesso!")
         UI.continuar()
 
     @classmethod
@@ -322,6 +341,7 @@ class UI:
         UI.clean()
         print("=== Atualizar Categoria ===")
         id = int(input("ID da categoria a atualizar: "))
+        print("Para manter o valor original pressione ENTER.")
         desc = input("Nova descrição: ")
         View.categoria_atualizar(id, desc)
         print(f"Categoria atualizada com sucesso!")
@@ -353,7 +373,9 @@ class UI:
         email = input("Email: ")
         senha = input("Senha: ")
         fone = input("Fone: ")
-        View.cliente_inserir(nome, email, senha, fone)
+        adm = input("Usuário é admin? N/s ")
+        adm = True if adm.strip().lower() == "s" else False
+        View.cliente_inserir(nome, email, senha, fone, adm)
         print(f"Cliente inserido com sucesso!")
         UI.continuar()
 
@@ -361,9 +383,12 @@ class UI:
         UI.clean()
         print("=== Atualizar Cliente ===")
         id = int(input("ID do cliente a atualizar: "))
+        print("Para manter o valor original pressione ENTER.")
         nome = input("Novo nome: ")
         email = input("Novo email: ")
         fone = input("Novo telefone: ")
+        adm = input("Usuário é admin? N/s ").strip().lower()
+        adm = True if adm == "s" else False
         View.cliente_atualizar(id, nome, email, fone)
         print(f"Cliente atualizado com sucesso!")
         UI.continuar()
