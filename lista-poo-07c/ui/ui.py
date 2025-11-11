@@ -108,7 +108,7 @@ class UI:
                 2: UI.produto_inserir_carrinho,
                 3: UI.carrinho_listar,
                 4: UI.carrinho_comprar,
-                # 5: UI.comprar_listar
+                5: UI.compra_listar,
             }
             op = UI.op()
             if op in options:
@@ -277,6 +277,27 @@ class UI:
         else:
             print("\nNão há items no carrinho.")
             UI.continuar()
+
+    @classmethod
+    def compra_listar(cls) -> None:
+        UI.clean()
+        print("=== Lista de Compras ===", "\n")
+        compras = View.compra_listar(cls.__usuario.get_id())
+        for c in compras:
+            venda, items = c
+            print(
+                f"Comprado de {venda.get_data().strftime("%d/%m/%Y %H:%M")}",
+                f"Valor Total: R$ {venda.get_total():.2f}",
+                sep=" - ",
+            )
+            for i in items:
+                print(
+                    f"\t{i["descricao"]} ({i["preco_uni"]:.2f})",
+                    f"Quant. {i["qtd"]} ({i["preco_qtd"]:.2f})",
+                    sep=" - ",
+                )
+            print()
+        UI.continuar()
 
     def categoria_inserir() -> None:
         UI.clean()

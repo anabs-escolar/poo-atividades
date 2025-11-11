@@ -160,3 +160,22 @@ class View:
                 venda_aberta = v
         venda_aberta.set_carrinho(False)
         VendaDAO.atualizar(venda_aberta)
+
+    def compra_listar(id_cliente: int) -> list[tuple[Venda, list[dict]]]:
+        compras = []
+        items = []
+        for v in VendaDAO.listar():
+            if v.get_id_cliente() == id_cliente and not v.get_carrinho():
+                for vi in VendaItemDAO.listar():
+                    if vi.get_id_venda() == v.get_id():
+                        prod = ProdutoDAO.listar_id(vi.get_id_produto())
+                        item = {
+                            "descricao": prod.get_descricao(),
+                            "preco_uni": prod.get_preco(),
+                            "preco_qtd": vi.get_preco(),
+                            "qtd": vi.get_qtd(),
+                        }
+                        items.append(item)
+                compras.append((v, items))
+            items = []
+        return compras
