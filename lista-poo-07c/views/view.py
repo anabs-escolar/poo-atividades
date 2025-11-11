@@ -152,3 +152,11 @@ class View:
                 )
 
         return itens, venda_aberta.get_total()
+
+    def carrinho_comprar(id_cliente: int) -> None:
+        venda_aberta = None
+        for v in VendaDAO.listar():
+            if v.get_id_cliente() == id_cliente and v.get_carrinho():
+                venda_aberta = v
+        venda_aberta.set_carrinho(False)
+        VendaDAO.atualizar(venda_aberta)

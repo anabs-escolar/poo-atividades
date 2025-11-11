@@ -107,7 +107,7 @@ class UI:
                 1: UI.produto_listar,
                 2: UI.produto_inserir_carrinho,
                 3: UI.carrinho_listar,
-                # 4: UI.carrinho_comprar
+                4: UI.carrinho_comprar,
                 # 5: UI.comprar_listar
             }
             op = UI.op()
@@ -237,7 +237,7 @@ class UI:
         id_prod = int(input("ID do produto a adicionar: "))
         qtd = int(input("Quantidade do produto: "))
         View.produto_inserir_carrinho(id_prod, cls.__usuario.get_id(), qtd)
-        print("Produto adicionado ao carrinho com sucesso!")
+        print("\nProduto adicionado ao carrinho com sucesso!")
         UI.continuar()
 
     @classmethod
@@ -248,8 +248,8 @@ class UI:
         if itens:
             for i in itens:
                 print(
-                    f"{i["descricao"]} - Preço: {i["preco_unitario"]:.2f}",
-                    f"\tQuantidade: {i["qtd"]} - Total: R$ {i["total_item"]:.2f}",
+                    f'{i["descricao"]} - Preço: {i["preco_unitario"]:.2f}',
+                    f'\tQuantidade: {i["qtd"]} - Total: R$ {i["total_item"]:.2f}',
                     sep="\n",
                 )
             print(f"\nValor Total: R$ {total:.2f}")
@@ -258,6 +258,25 @@ class UI:
             print("\nNão há itens no carrinho.")
 
         UI.continuar()
+
+    @classmethod
+    def carrinho_comprar(cls):
+        UI.clean()
+        print("=== Confirmar Compra ===")
+        itens, total = View.carrinho_listar(cls.__usuario.get_id())
+        if itens:
+            print(f"\nValor Total da Compra: R$ {total:.2f}")
+            op = input("\nDeseja confimar essa compra? N/s ")
+            if op.lower() == "s":
+                View.carrinho_comprar(cls.__usuario.get_id())
+                print("\nCompra confirmada com sucesso!")
+                UI.continuar()
+            else:
+                print("\nConfirmação cancelada.")
+                UI.continuar()
+        else:
+            print("\nNão há items no carrinho.")
+            UI.continuar()
 
     def categoria_inserir() -> None:
         UI.clean()
@@ -324,7 +343,7 @@ class UI:
         nome = input("Novo nome: ")
         email = input("Novo email: ")
         fone = input("Novo telefone: ")
-        View.cliente_atuazlizar(id, nome, email, fone)
+        View.cliente_atualizar(id, nome, email, fone)
         print(f"Cliente atualizado com sucesso!")
         UI.continuar()
 
