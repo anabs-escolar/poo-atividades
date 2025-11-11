@@ -21,6 +21,25 @@ class Venda:
     def __str__(self) -> str:
         return f"id: {self.__id}, {self.__data}, {self.__carrinho}, {self.__total}, {self.__id_cliente}"
 
+    def to_json(self) -> dict:
+        return {
+            "id": self.get_id(),
+            "data": self.get_data().isoformat(),
+            "carrinho": self.get_carrinho(),
+            "total": self.get_total(),
+            "id_cliente": self.get_id_cliente(),
+        }
+
+    @staticmethod
+    def from_json(json: dict) -> object:
+        return Venda(
+            json["id"],
+            datetime.fromisoformat(json.get("data")),
+            json["carrinho"],
+            json["total"],
+            json["id_cliente"],
+        )
+
     def get_id(self) -> int:
         return self.__id
 
