@@ -230,6 +230,16 @@ class UI:
         print(f"Produto excluído com sucesso!")
         UI.continuar()
 
+    @classmethod
+    def produto_inserir_carrinho(cls):
+        UI.clean()
+        print("=== Adicionar Item ao Carrinho ===")
+        id_prod = int(input("ID do produto a adicionar: "))
+        qtd = int(input("Quantidade do produto: "))
+        View.produto_inserir_carrinho(id_prod, qtd, cls.__usuario.get_id())
+        print("Produto adicionado ao carrinho com sucesso!")
+        UI.continuar()
+
     def categoria_inserir() -> None:
         UI.clean()
         print("=== Inserir Categoria ===")

@@ -1,5 +1,7 @@
-from dao import ClienteDAO, CategoriaDAO, ProdutoDAO
-from models import Cliente, Categoria, Produto
+from datetime import datetime
+
+from data import ClienteDAO, CategoriaDAO, ProdutoDAO, VendaDAO, VendaItemDAO
+from models import Cliente, Categoria, Produto, Venda, VendaItem
 
 
 class View:
@@ -8,7 +10,7 @@ class View:
         CategoriaDAO.abrir()
         ProdutoDAO.abrir()
 
-    def cliente_autenticar(email: str, senha: str) -> dict | None:
+    def cliente_autenticar(email: str, senha: str) -> object | None:
         for obj in ClienteDAO.listar():
             if (obj.get_email() == email) and (obj.get_senha() == senha):
                 return obj
@@ -73,3 +75,45 @@ class View:
 
     def produto_reajustar(percentual: float) -> None:
         pass
+
+    def produto_inserir_carrinho(id_produto: int, id_cliente: int, qtd: int) -> None:
+        venda_aberta = None
+        for venda in VendaDAO.listar():
+            if venda.get_id_cliente() == id_cliente and venda.get_carrinho():
+                venda_aberta = venda
+                break
+
+        if venda_aberta is None:
+            venda_aberta = Venda(0, id_cliente, True, datetime.now())
+            VendaDAO.inserir(venda_aberta)
+
+        produto = ProdutoDAO.listar_id(id_produto)
+
+        item = None
+        for vi in VendaItemDAO.listar():
+            if (
+                vi.get_id_venda() == venda_aberta.get_id()
+                and vi.get_id_produto() == id_produto
+            ):
+                item = vi
+
+        if item:
+            antigo_preco = item.get_preco()
+            novo_qtd = item.get_qtd() + qtd
+            novo_preco = novo_qtd * produto.get_preco()
+
+            item.set_qtd(novo_qtd)
+            item.set_preco(novo_preco)
+
+            VendaItemDAO.atualizar(item)
+            venda_aberta.set_total(
+                venda_aberta.get_total() + (novo_preco - antigo_preco)
+            )
+        else:
+            item = VendaItem(
+                0, venda_aberta.get_id(), id_produto, qtd, qtd * produto.get_preco()
+            )
+            VendaItemDAO.inserir(item)
+            venda_aberta.set_total(qtd * produto.get_preco())
+
+        VendaDAO.atualizar(venda_aberta)
