@@ -103,7 +103,7 @@ class View:
             produto.set_estoque(estoque)
         if id_categoria:
             produto.set_id_categoria(id_categoria)
-        ProdutoDAO.inserir(produto)
+        ProdutoDAO.atualizar(produto)
 
     def produto_excluir(id: int) -> None:
         p = ProdutoDAO.listar_id(id)
@@ -193,6 +193,15 @@ class View:
         for v in VendaDAO.listar():
             if v.get_id_cliente() == id_cliente and v.get_carrinho():
                 venda_aberta = v
+                for vi in VendaItemDAO.listar():
+                    if vi.get_id_venda() == venda_aberta.get_id():
+                        produto = ProdutoDAO.listar_id(vi.get_id_produto())
+                        if produto:
+                            novo_estoque = produto.get_estoque() - vi.get_qtd()
+                            if novo_estoque < 0:
+                                novo_estoque = 0
+                            produto.set_estoque(novo_estoque)
+                            ProdutoDAO.atualizar(produto)
         venda_aberta.set_carrinho(False)
         VendaDAO.atualizar(venda_aberta)
 
