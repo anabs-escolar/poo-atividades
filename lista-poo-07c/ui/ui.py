@@ -77,6 +77,7 @@ class UI:
                 "1. Gerenciar Clientes",
                 "2. Gerenciar Categorias",
                 "3. Gerenciar Produtos",
+                "4. Listar Vendas",
                 "0. Sair",
                 sep="\n",
             )
@@ -84,11 +85,13 @@ class UI:
                 1: UI.cliente_menu,
                 2: UI.categoria_menu,
                 3: UI.produto_menu,
+                4: UI.vendas_listar,
             }
             op = UI.op()
             if op in options:
                 options[op]()
             elif op == 0:
+                UI.clean()
                 print("Desconectando seu usuário.")
                 cls.__usuario = None
                 UI.continuar()
@@ -113,12 +116,13 @@ class UI:
                 2: UI.produto_inserir_carrinho,
                 3: UI.carrinho_listar,
                 4: UI.carrinho_comprar,
-                5: UI.compra_listar,
+                5: UI.compras_listar,
             }
             op = UI.op()
             if op in options:
                 options[op]()
             elif op == 0:
+                UI.clean()
                 print("Desconectando seu usuário.")
                 cls.__usuario = None
                 UI.continuar()
@@ -298,10 +302,10 @@ class UI:
             UI.continuar()
 
     @classmethod
-    def compra_listar(cls) -> None:
+    def compras_listar(cls) -> None:
         UI.clean()
         print("=== Lista de Compras ===", "\n")
-        compras = View.compra_listar(cls.__usuario.get_id())
+        compras = View.compras_listar(cls.__usuario.get_id())
         for c in compras:
             venda, items = c
             print(
@@ -399,4 +403,25 @@ class UI:
         id = int(input("ID do cliente a excluir: "))
         View.cliente_excluir(id)
         print(f"Cliente excluído com sucesso!")
+        UI.continuar()
+
+    def vendas_listar() -> None:
+        UI.clean()
+        print("=== Lista de Vendas ===", "\n")
+        compras = View.vendas_listar()
+        for c in compras:
+            venda, items = c
+            print(
+                f"Cliente: {venda["cliente"]}",
+                f"Comprado em {venda["data"].strftime("%d/%m/%Y %H:%M")}",
+                f"Valor Total: R$ {venda["total"]:.2f}",
+                sep=" - ",
+            )
+            for i in items:
+                print(
+                    f"\t{i["descricao"]} ({i["preco_uni"]:.2f})",
+                    f"Quant. {i["qtd"]} ({i["preco_qtd"]:.2f})",
+                    sep=" - ",
+                )
+            print()
         UI.continuar()
