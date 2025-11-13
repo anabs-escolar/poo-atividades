@@ -183,6 +183,8 @@ class UI:
             print("2. Listar Clientes")
             print("3. Atualizar Cliente")
             print("4. Excluir Cliente")
+            print("5. Adicionar Admin")
+            print("6. Remover Admin")
             print("0. Voltar")
             op = UI.op()
             options = {
@@ -190,6 +192,8 @@ class UI:
                 2: UI.cliente_listar,
                 3: UI.cliente_atualizar,
                 4: UI.cliente_excluir,
+                5: UI.adicionar_admin,
+                6: UI.remover_admin,
             }
             if op in options:
                 options[op]()
@@ -391,8 +395,6 @@ class UI:
         nome = input("Novo nome: ")
         email = input("Novo email: ")
         fone = input("Novo telefone: ")
-        adm = input("Usuário é admin? N/s ").strip().lower()
-        adm = True if adm == "s" else False
         View.cliente_atualizar(id, nome, email, fone)
         print(f"Cliente atualizado com sucesso!")
         UI.continuar()
@@ -403,6 +405,28 @@ class UI:
         id = int(input("ID do cliente a excluir: "))
         View.cliente_excluir(id)
         print(f"Cliente excluído com sucesso!")
+        UI.continuar()
+
+    def adicionar_admin() -> None:
+        UI.clean()
+        print("=== Adicionar Administrador ===")
+        print(
+            "Para adicionar permissões de administrador ao usuário, informe abaixo o ID."
+        )
+        id = int(input("ID do usuário: "))
+        View.adicionar_admin(id)
+        print(f"Permissão adicionada com sucesso!")
+        UI.continuar()
+
+    def remover_admin() -> None:
+        UI.clean()
+        print("=== Remover Administrador ===")
+        print(
+            "Para remover permissões de administrador de um usuário, informe abaixo o ID."
+        )
+        id = int(input("ID do usuário: "))
+        View.remover_admin(id)
+        print(f"Permissão removida com sucesso!")
         UI.continuar()
 
     def vendas_listar() -> None:

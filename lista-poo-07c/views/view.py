@@ -27,9 +27,7 @@ class View:
         cliente = Cliente(0, nome, email, senha, fone, is_admin)
         ClienteDAO.inserir(cliente)
 
-    def cliente_atualizar(
-        id: int, nome: str, email: str, fone: str, is_admin: bool | None
-    ) -> None:
+    def cliente_atualizar(id: int, nome: str, email: str, fone: str) -> None:
         cliente = ClienteDAO.listar_id(id)
         if not cliente:
             print("Cliente não encontrado.")
@@ -40,14 +38,27 @@ class View:
             cliente.set_email(email)
         if fone.strip():
             cliente.set_fone(fone)
-        if is_admin is not None:
-            cliente.set_admin(is_admin)
-
         ClienteDAO.atualizar(cliente)
 
     def cliente_excluir(id: int) -> None:
         c = ClienteDAO.listar_id(id)
         ClienteDAO.excluir(c)
+
+    def adicionar_admin(id: int) -> None:
+        c = ClienteDAO.listar_id(id)
+        if not c:
+            print("Cliente não encontrado.")
+            return
+        c.set_is_admin(True)
+        ClienteDAO.atualizar(c)
+
+    def remover_admin(id: int) -> None:
+        c = ClienteDAO.listar_id(id)
+        if not c:
+            print("Cliente não encontrado.")
+            return
+        c.set_is_admin(False)
+        ClienteDAO.atualizar(c)
 
     def categoria_listar() -> list[Categoria]:
         return CategoriaDAO.listar()

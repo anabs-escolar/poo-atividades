@@ -26,7 +26,8 @@ class Cliente:
         self.set_is_admin(is_admin)
 
     def __str__(self) -> str:
-        return f"id: {self.__id}, {self.__nome}, {self.__email}, {self.__fone}"
+        adm = "Usuáio Admin" if self.get_is_admin() else "Usuário Comum"
+        return f"id: {self.__id}, {self.__nome}, {self.__email}, {self.__fone}, {adm}"
 
     def to_json(self) -> dict:
         return {
