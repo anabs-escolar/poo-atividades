@@ -18,7 +18,9 @@ class Produto:
         self.set_id_categoria(id_categoria)
 
     def __str__(self) -> str:
-        return f"id: {self.__id}, {self.__descricao}, {self.__preco}, {self.__estoque}"
+        return (
+            f"id: {self.__id}, {self.__descricao}, {self.__preco:.2f}, {self.__estoque}"
+        )
 
     def to_json(self) -> dict:
         return {

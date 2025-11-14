@@ -19,7 +19,7 @@ class Venda:
         self.set_id_cliente(id_cliente)
 
     def __str__(self) -> str:
-        return f"id: {self.__id}, {self.__data}, {self.__carrinho}, {self.__total}, {self.__id_cliente}"
+        return f"id: {self.__id}, {self.__data}, {self.__carrinho}, {self.__total:.2f}, {self.__id_cliente}"
 
     def to_json(self) -> dict:
         return {

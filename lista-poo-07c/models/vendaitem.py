@@ -16,7 +16,7 @@ class VendaItem:
         self.__preco = preco
 
     def __str__(self) -> str:
-        return f"id: {self.__id}, venda: {self.__id_venda}, produto: {self.__id_produto}, quantidade: {self.__qtd}, preco: {self.__preco}"
+        return f"id: {self.__id}, venda: {self.__id_venda}, produto: {self.__id_produto}, quantidade: {self.__qtd}, preco: {self.__preco:.2f}"
 
     def to_json(self) -> dict:
         return {
