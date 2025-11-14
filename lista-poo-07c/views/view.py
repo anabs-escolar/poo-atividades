@@ -239,9 +239,9 @@ class View:
                             "qtd": vi.get_qtd(),
                         }
                         items.append(item)
-                cliente = ClienteDAO.listar_id(v.get_id_cliente()).get_nome()
+                cliente = ClienteDAO.listar_id(v.get_id_cliente())
                 venda = {
-                    "cliente": cliente if cliente else "Cliente Excluido",
+                    "cliente": cliente.get_nome() if cliente else "Cliente Excluido",
                     "total": v.get_total(),
                     "data": v.get_data(),
                 }
