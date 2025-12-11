@@ -2,6 +2,7 @@ from .visitante import VisitanteUI
 from .cliente import ClienteUI
 from .produto import ProdutoUI
 from .categoria import CategoriaUI
+from .carrinho import CarrinhoUI
 from .venda import VendaUI
 from views import View
 import streamlit as st
@@ -39,19 +40,11 @@ class IndexUI:
             VisitanteUI.criar_conta()
 
     def menu_cliente():
-        op = st.sidebar.selectbox(
-            "Menu", ["Listar produtos", "Carrinho", "Listar minhas compras", "Sair"]
-        )
+        op = st.sidebar.selectbox("Menu", ["Comprar Produtos", "Sair"])
 
-        if op == "Listar produtos":
-            # ManterProdutoUI.listar()
-            pass
-        if op == "Carrinho":
-            # ClienteUI.carrinho()
-            pass
-        if op == "Listar minhas compras":
-            # ClienteUI.listar_minhas_compras()
-            pass
+        if op == "Comprar Produtos":
+            CarrinhoUI.main()
+
         if op == "Sair":
             IndexUI.logout()
 
@@ -59,19 +52,19 @@ class IndexUI:
         op = st.sidebar.selectbox(
             "Menu",
             [
-                "Cadastro de clientes",
-                "Cadastro de categorias",
-                "Cadastro de produtos",
+                "Gerenciar Clientes",
+                "Gerenciar Categorias",
+                "Gerenciar Produtos",
                 "Listar Vendas",
                 "Sair",
             ],
         )
 
-        if op == "Cadastro de categorias":
+        if op == "Gerenciar Categorias":
             CategoriaUI.main()
-        if op == "Cadastro de clientes":
+        if op == "Gerenciar Clientes":
             ClienteUI.main()
-        if op == "Cadastro de produtos":
+        if op == "Gerenciar Produtos":
             ProdutoUI.main()
         if op == "Listar Vendas":
             VendaUI.main()

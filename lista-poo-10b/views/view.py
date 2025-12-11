@@ -24,39 +24,82 @@ class View:
     def cliente_inserir(
         nome: str, email: str, senha: str, fone: str, is_admin: bool = False
     ) -> None:
+        if not nome.strip():
+            raise ValueError("Nome não pode ser vazio.")
+        if not email.strip():
+            raise ValueError("Email não pode ser vazio.")
+        if not senha.strip():
+            raise ValueError("Senha não pode ser vazia.")
+        if not fone.strip():
+            raise ValueError("Telefone não pode ser vazio.")
+
+        for c in ClienteDAO.listar():
+            if c.get_email() == email:
+                raise ValueError("Já existe um cliente com esse e-mail.")
+
         cliente = Cliente(0, nome, email, senha, fone, is_admin)
         ClienteDAO.inserir(cliente)
 
     def cliente_atualizar(id: int, nome: str, email: str, fone: str) -> None:
         cliente = ClienteDAO.listar_id(id)
         if not cliente:
-            print("Cliente não encontrado.")
-            return
+            raise ValueError("Cliente não encontrado.")
+
+        if nome is not None and not nome.strip():
+            raise ValueError("Nome não pode ser vazio.")
+
+        if email is not None and not email.strip():
+            raise ValueError("Email não pode ser vazio.")
+
+        if fone is not None and not fone.strip():
+            raise ValueError("Telefone não pode ser vazio.")
+
+        if email.strip():
+            for c in ClienteDAO.listar():
+                if c.get_id() != id and c.get_email() == email:
+                    raise ValueError("Já existe um cliente com esse e-mail.")
+            cliente.set_email(email)
+
         if nome.strip():
             cliente.set_nome(nome)
-        if email.strip():
-            cliente.set_email(email)
+
         if fone.strip():
             cliente.set_fone(fone)
+
         ClienteDAO.atualizar(cliente)
 
     def cliente_excluir(id: int) -> None:
         c = ClienteDAO.listar_id(id)
+        if not c:
+            raise ValueError("Cliente não encontrado.")
+
+        for v in VendaDAO.listar():
+            if v.get_id_cliente() == id:
+                raise ValueError(
+                    "Cliente associado a uma Venda - não pode ser excluído."
+                )
+
         ClienteDAO.excluir(c)
 
     def adicionar_admin(id: int) -> None:
         c = ClienteDAO.listar_id(id)
         if not c:
-            print("Cliente não encontrado.")
-            return
+            raise ValueError("Cliente não encontrado.")
+
+        if c.get_is_admin():
+            raise ValueError("O cliente já é administrador.")
+
         c.set_is_admin(True)
         ClienteDAO.atualizar(c)
 
     def remover_admin(id: int) -> None:
         c = ClienteDAO.listar_id(id)
         if not c:
-            print("Cliente não encontrado.")
-            return
+            raise ValueError("Cliente não encontrado.")
+
+        if not c.get_is_admin():
+            raise ValueError("O cliente não é administrador.")
+
         c.set_is_admin(False)
         ClienteDAO.atualizar(c)
 
@@ -64,20 +107,39 @@ class View:
         return CategoriaDAO.listar()
 
     def categoria_inserir(descricao: str) -> None:
+        if not descricao.strip():
+            raise ValueError("Descrição da categoria não pode ser vazia.")
+
+        for c in CategoriaDAO.listar():
+            if c.get_descricao() == descricao:
+                raise ValueError("Essa descrição de Categoria já está cadastrada.")
         categoria = Categoria(0, descricao)
         CategoriaDAO.inserir(categoria)
 
     def categoria_atualizar(id: int, descricao: str) -> None:
         categoria = CategoriaDAO.listar_id(id)
         if not categoria:
-            print("Categoria não encontrada")
-            return
+            raise ValueError("Categoria não encontrada")
+        if not descricao.strip():
+            raise ValueError("Descrição da categoria não pode ser vazia.")
         if descricao.strip():
+            for c in CategoriaDAO.listar():
+                if c.get_descricao() == descricao:
+                    raise ValueError("Essa descrição de Categoria já está cadastrada.")
             categoria.set_descricao(descricao)
         CategoriaDAO.atualizar(categoria)
 
     def categoria_excluir(id: int) -> None:
         c = CategoriaDAO.listar_id(id)
+        if not c:
+            raise ValueError("Categoria não encontrada.")
+
+        for p in ProdutoDAO.listar():
+            if p.get_id_categoria() == id:
+                raise ValueError(
+                    "Categoria usada em Produtos — exclusão não permitida."
+                )
+
         CategoriaDAO.excluir(c)
 
     def produto_listar() -> list[Produto]:
@@ -86,6 +148,33 @@ class View:
     def produto_inserir(
         descricao: str, preco: float, estoque: int, id_categoria: int
     ) -> None:
+        if not descricao.strip():
+            raise ValueError("Descrição do produto não pode ser vazia.")
+
+        if preco is None or preco == "":
+            raise ValueError("Preço não pode ser vazio.")
+
+        if estoque is None or estoque == "":
+            raise ValueError("Estoque não pode ser vazio.")
+
+        if id_categoria is None:
+            raise ValueError("A categoria não pode ser vazia.")
+
+        c = CategoriaDAO.listar_id(id_categoria)
+        if c is None:
+            raise ValueError("Categoria não encontrada.")
+
+        if preco <= 0:
+            raise ValueError("O preço deve ser maior que zero.")
+
+        if estoque < 0:
+            raise ValueError("O estoque não pode ser negativo.")
+
+        produtos = ProdutoDAO.listar()
+        for p in produtos:
+            if p.get_descricao() == descricao:
+                raise ValueError("Produto já existe.")
+
         produto = Produto(0, descricao, preco, estoque, id_categoria)
         ProdutoDAO.inserir(produto)
 
@@ -94,66 +183,111 @@ class View:
     ) -> None:
         produto = ProdutoDAO.listar_id(id)
         if not produto:
-            print("Produto não encontrado.")
+            raise ValueError("Produto não encontrado.")
+
+        if not descricao.strip():
+            raise ValueError("Descrição do produto não pode ser vazia.")
+
+        if preco is None or preco == "":
+            raise ValueError("Preço não pode ser vazio.")
+
+        if estoque is None or estoque == "":
+            raise ValueError("Estoque não pode ser vazio.")
+
+        if id_categoria is None:
+            raise ValueError("A categoria não pode ser vazia.")
+
+        categoria = CategoriaDAO.listar_id(id_categoria)
+        if not categoria:
+            raise ValueError("Categoria não encontrada.")
+
+        if preco <= 0:
+            raise ValueError("Preço deve ser maior que zero.")
+        if estoque < 0:
+            raise ValueError("Estoque não pode ser negativo.")
+
+        for p in ProdutoDAO.listar():
+            if p.get_id() != id and p.get_descricao() == descricao:
+                raise ValueError("Já existe outro produto com essa descrição.")
+
         if descricao.strip():
             produto.set_descricao(descricao)
-        if preco:
-            produto.set_preco(preco)
-        if estoque:
-            produto.set_estoque(estoque)
-        if id_categoria:
-            produto.set_id_categoria(id_categoria)
+        produto.set_preco(preco)
+        produto.set_estoque(estoque)
+        produto.set_id_categoria(id_categoria)
+
         ProdutoDAO.atualizar(produto)
 
     def produto_excluir(id: int) -> None:
+        for vi in VendaItemDAO.listar():
+            if vi.get_id_produto() == id:
+                raise ValueError(
+                    "Produto não pode ser excluído porque está associada a uma Venda."
+                )
+
         p = ProdutoDAO.listar_id(id)
         ProdutoDAO.excluir(p)
 
     def produto_reajustar(percentual: float) -> None:
+        if percentual == "" or percentual is None:
+            raise ValueError("Percentual não pode ser vazio.")
+
         for p in ProdutoDAO.listar():
             p.set_preco(p.get_preco() * (percentual + 1))
+            ProdutoDAO.atualizar(p)
 
     def produto_inserir_carrinho(id_produto: int, id_cliente: int, qtd: int) -> None:
-        venda_aberta = None
-        for venda in VendaDAO.listar():
-            if venda.get_id_cliente() == id_cliente and venda.get_carrinho():
-                venda_aberta = venda
-                break
+        if qtd is None or qtd == "":
+            raise ValueError("Quantidade não pode ser vazia.")
 
-        if venda_aberta is None:
-            venda_aberta = Venda(0, datetime.now(), True, 0.0, id_cliente)
-            VendaDAO.inserir(venda_aberta)
+        if qtd <= 0:
+            raise ValueError("Quantidade deve ser maior que zero.")
 
         produto = ProdutoDAO.listar_id(id_produto)
+        if not produto:
+            raise ValueError("Produto não encontrado.")
+        if qtd <= 0:
+            raise ValueError("Quantidade deve ser maior que zero.")
+        if qtd > produto.get_estoque():
+            raise ValueError("Quantidade maior que o estoque disponível.")
+
+        venda = None
+        for v in VendaDAO.listar():
+            if v.get_id_cliente() == id_cliente and v.get_carrinho():
+                venda = v
+                break
+
+        if not venda:
+            venda = Venda(0, datetime.now(), True, 0.0, id_cliente)
+            VendaDAO.inserir(venda)
 
         item = None
         for vi in VendaItemDAO.listar():
             if (
-                vi.get_id_venda() == venda_aberta.get_id()
+                vi.get_id_venda() == venda.get_id()
                 and vi.get_id_produto() == id_produto
             ):
                 item = vi
+                break
 
         if item:
-            novo_qtd = item.get_qtd() + qtd
-            novo_preco = novo_qtd * produto.get_preco()
-
-            item.set_qtd(novo_qtd)
-            item.set_preco(novo_preco)
-
+            nova_qtd = item.get_qtd() + qtd
+            item.set_qtd(nova_qtd)
+            item.set_preco(nova_qtd * produto.get_preco())
             VendaItemDAO.atualizar(item)
         else:
-            item = VendaItem(
-                0, venda_aberta.get_id(), id_produto, qtd, qtd * produto.get_preco()
+            novo_item = VendaItem(
+                0, venda.get_id(), id_produto, qtd, qtd * produto.get_preco()
             )
-            VendaItemDAO.inserir(item)
+            VendaItemDAO.inserir(novo_item)
 
-        total = 0.0
-        for vi in VendaItemDAO.listar():
-            if venda_aberta.get_id() == vi.get_id_venda():
-                total += vi.get_preco()
-        venda_aberta.set_total(total)
-        VendaDAO.atualizar(venda_aberta)
+        total = sum(
+            vi.get_preco()
+            for vi in VendaItemDAO.listar()
+            if vi.get_id_venda() == venda.get_id()
+        )
+        venda.set_total(total)
+        VendaDAO.atualizar(venda)
 
     def carrinho_listar(id_cliente: int) -> tuple[list[dict], float]:
         venda_aberta = None
@@ -189,21 +323,29 @@ class View:
         return itens, venda_aberta.get_total()
 
     def carrinho_comprar(id_cliente: int) -> None:
-        venda_aberta = None
+        itens, total = View.carrinho_listar(id_cliente)
+        if not itens:
+            raise ValueError("Carrinho vazio.")
+
+        venda = None
         for v in VendaDAO.listar():
             if v.get_id_cliente() == id_cliente and v.get_carrinho():
-                venda_aberta = v
-                for vi in VendaItemDAO.listar():
-                    if vi.get_id_venda() == venda_aberta.get_id():
-                        produto = ProdutoDAO.listar_id(vi.get_id_produto())
-                        if produto:
-                            novo_estoque = produto.get_estoque() - vi.get_qtd()
-                            if novo_estoque < 0:
-                                novo_estoque = 0
-                            produto.set_estoque(novo_estoque)
-                            ProdutoDAO.atualizar(produto)
-        venda_aberta.set_carrinho(False)
-        VendaDAO.atualizar(venda_aberta)
+                venda = v
+                break
+
+        if not venda:
+            raise ValueError("Nenhuma venda aberta encontrada.")
+
+        for vi in VendaItemDAO.listar():
+            if vi.get_id_venda() == venda.get_id():
+                produto = ProdutoDAO.listar_id(vi.get_id_produto())
+                if produto:
+                    novo_estoque = produto.get_estoque() - vi.get_qtd()
+                    produto.set_estoque(max(0, novo_estoque))
+                    ProdutoDAO.atualizar(produto)
+
+        venda.set_carrinho(False)
+        VendaDAO.atualizar(venda)
 
     def compras_listar(id_cliente: int) -> list[tuple[Venda, list[dict]]]:
         compras = []

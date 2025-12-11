@@ -7,8 +7,8 @@ import time
 class ProdutoUI:
     def main():
         st.header("Manter produto")
-        tab1, tab2, tab3, tab4 = st.tabs(
-            ["Listar", "Cadastrar", "Atualizar", "Excluir"]
+        tab1, tab2, tab3, tab4, tab5 = st.tabs(
+            ["Listar", "Cadastrar", "Atualizar", "Reajustar", "Excluir"]
         )
 
         with tab1:
@@ -18,6 +18,8 @@ class ProdutoUI:
         with tab3:
             ProdutoUI.atualizar()
         with tab4:
+            ProdutoUI.reajustar()
+        with tab5:
             ProdutoUI.excluir()
 
     def listar():
@@ -65,12 +67,6 @@ class ProdutoUI:
         )
 
         if st.button("Cadastrar"):
-            for c in View.produto_listar():
-                if c.get_descricao() == descricao:
-                    st.warning("Produto já existe")
-                    time.sleep(2)
-                    st.rerun()
-
             try:
                 View.produto_inserir(descricao, preco, estoque, categoria.get_id())
                 st.success("Produto cadastrado com sucesso")
@@ -91,8 +87,8 @@ class ProdutoUI:
         )
         categorias = View.categoria_listar()
         descricao = st.text_input("Descrição", op.get_descricao())
-        preco = st.number_input("Preço", op.get_preco())
-        estoque = st.number_input("Estoque", op.get_estoque())
+        preco = st.number_input("Preço", value=op.get_preco(), max_value=None)
+        estoque = st.number_input("Estoque", value=op.get_estoque(), max_value=None)
         categoria = st.selectbox(
             "Categoria",
             options=categorias,
@@ -102,9 +98,10 @@ class ProdutoUI:
 
         if st.button("Atualizar"):
             p_id = op.get_id()
-            c_id = categoria.get_id()
-            if categoria == None:
-                c_id = op.get_categoria()
+            if categoria:
+                c_id = categoria.get_id()
+            else:
+                c_id = op.get_id_categoria()
 
             try:
                 View.produto_atualizar(p_id, descricao, preco, estoque, c_id)
@@ -116,7 +113,6 @@ class ProdutoUI:
 
     def excluir():
         produtos = View.produto_listar()
-        vendas = View.vendas_listar()
 
         op = st.selectbox(
             "Produto para Excluir (ID, Descrição)",
@@ -125,19 +121,28 @@ class ProdutoUI:
         )
         if st.button("Excluir"):
             p_id = op.get_id()
-            for venda, itens in vendas:
-                for item in itens:
-                    if item["id_produto"] == p_id:
-                        st.error(
-                            "Esse produto está associado a uma venda e não pode ser excluído."
-                        )
-                        time.sleep(2)
-                        st.rerun()
-
-            View.produto_excluir(p_id)
-            st.success("Produto excluído com sucesso")
-            time.sleep(2)
-            st.rerun()
+            try:
+                View.produto_excluir(p_id)
+                st.success("Produto excluído com sucesso")
+                time.sleep(2)
+                st.rerun()
+            except ValueError as e:
+                st.warning(e)
 
     def reajustar():
-        pass
+        produtos = View.produto_listar()
+        if len(produtos) == 0:
+            st.write("Cadastre Produtos antes de reajustar.")
+
+        reajuste = st.number_input(
+            "Percentual de Reajuste",
+            help="Digite o percentual em Decimal. Ex: 50% -> 0.50",
+        )
+        if st.button("Reajustar"):
+            try:
+                View.produto_reajustar(reajuste)
+                st.success("Preço de Produtos reajustado com sucesso!'")
+                time.sleep(2)
+                st.rerun()
+            except ValueError as e:
+                st.warning(e)

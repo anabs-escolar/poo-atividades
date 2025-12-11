@@ -7,8 +7,15 @@ import time
 class ClienteUI:
     def main():
         st.header("Cadastro de cliente")
-        tab1, tab2, tab3, tab4 = st.tabs(
-            ["Listar", "Cadastrar", "Atualizar", "Excluir"]
+        tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(
+            [
+                "Listar",
+                "Cadastrar",
+                "Atualizar",
+                "Adicionar Admin",
+                "Remover Admin",
+                "Excluir",
+            ]
         )
 
         with tab1:
@@ -18,6 +25,10 @@ class ClienteUI:
         with tab3:
             ClienteUI.atualizar()
         with tab4:
+            ClienteUI.adiciona_admin()
+        with tab5:
+            ClienteUI.remover_admin()
+        with tab6:
             ClienteUI.excluir()
 
     def listar():
@@ -78,11 +89,14 @@ class ClienteUI:
         telefone = st.text_input("Telefone", op.get_fone())
 
         if st.button("Atualizar"):
-            c_id = op.get_id()
-            View.cliente_atualizar(c_id, nome, email, telefone)
-            st.success("Cliente atualizado com sucesso")
-            time.sleep(2)
-            st.rerun()
+            try:
+                c_id = op.get_id()
+                View.cliente_atualizar(c_id, nome, email, telefone)
+                st.success("Cliente atualizado com sucesso")
+                time.sleep(2)
+                st.rerun()
+            except ValueError as e:
+                st.warning(e)
 
     def excluir():
         clientes = View.cliente_listar()
@@ -93,14 +107,55 @@ class ClienteUI:
         )
 
         if st.button("Excluir"):
-            c_id = op.get_id()
-            View.cliente_excluir(c_id)
-            st.success("Cliente excluído com sucesso")
-            time.sleep(2)
-            st.rerun()
+            try:
+                c_id = op.get_id()
+                View.cliente_excluir(c_id)
+                st.success("Cliente excluído com sucesso")
+                time.sleep(2)
+                st.rerun()
+            except ValueError as e:
+                st.warning(e)
 
     def adiciona_admin():
-        pass
+        clientes = View.cliente_listar()
+        if len(clientes) == 0:
+            st.write("Nenhum cliente cadastrado")
+
+        op = st.selectbox(
+            "Cliente para Admin (ID, Nome)",
+            clientes,
+            format_func=lambda c: f"{c.get_id()}, {c.get_nome()}",
+        )
+        if st.button("Adicionar Permissão"):
+            try:
+                c_id = op.get_id()
+                View.adicionar_admin(c_id)
+                st.success(
+                    f"Permissão de Administrador adicionada ao Cliente {op.get_nome()}"
+                )
+                time.sleep(2)
+                st.rerun()
+            except ValueError as e:
+                st.warning(e)
 
     def remover_admin():
-        pass
+        clientes = View.cliente_listar()
+        if len(clientes) == 0:
+            st.write("Nenhum cliente cadastrado")
+
+        op = st.selectbox(
+            "Cliente para Usuário Comum (ID, Nome)",
+            clientes,
+            format_func=lambda c: f"{c.get_id()}, {c.get_nome()}",
+        )
+        if st.button("Remover Permissão"):
+            try:
+                c_id = op.get_id()
+                View.remover_admin(c_id)
+                st.success(
+                    f"Permissão de Administrador removida de Cliente {op.get_nome()}"
+                )
+                time.sleep(2)
+                st.rerun()
+            except ValueError as e:
+                st.warning(e)

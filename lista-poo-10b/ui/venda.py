@@ -33,7 +33,6 @@ class VendaUI:
             column_order=["Cliente", "Data", "Total (R$)"],
         )
 
-        st.markdown("---")
         st.subheader("Detalhes de cada venda")
 
         for venda, items in vendas:

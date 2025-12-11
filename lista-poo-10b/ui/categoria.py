@@ -50,12 +50,6 @@ class CategoriaUI:
         nome = st.text_input("Nome")
 
         if st.button("Cadastrar"):
-            for c in View.categoria_listar():
-                if c.get_descricao() == nome:
-                    st.warning("Categoria já existe")
-                    time.sleep(2)
-                    st.rerun()
-
             try:
                 View.categoria_inserir(nome)
                 st.success("Categoria cadastrada com sucesso")
@@ -87,7 +81,6 @@ class CategoriaUI:
 
     def excluir():
         categorias = View.categoria_listar()
-        produtos = View.produto_listar()
 
         if not categorias:
             st.write("Nenhuma categoria cadastrada")
@@ -101,12 +94,6 @@ class CategoriaUI:
 
         if st.button("Excluir"):
             cat_id = op.get_id()
-            for p in produtos:
-                if p.get_id_categoria() == cat_id:
-                    st.error("Essa categoria está sendo usada por um produto")
-                    time.sleep(2)
-                    st.rerun()
-
             try:
                 View.categoria_excluir(cat_id)
                 st.success("Categoria excluída com sucesso")
